@@ -3,6 +3,8 @@ let context = canvas.getContext("2d");
 let box = 32;
 let snake = [];
 let pontuacao = 1;
+let confere;
+let pontuacao_maxima = 0;
 snake[0] = {
     x: 8 * box,
     y: 8 * box
@@ -40,14 +42,16 @@ function update (event){
 }
 
 function iniciarJogo(){
-    if(snake[0].x > 15 * box && direction == "right") snake[0].x = 0;
-    if(snake[0].x < 0 && direction == "left") snake[0].x = 16 * box;
-    if(snake[0].y > 15 * box && direction == "up") snake[0].y = 0;
-    if(snake[0].y < 0 && direction == "down") snake[0].y = 16 * box;
+    if(snake[0].x > 15 * box) snake[0].x = 0;
+    if(snake[0].x < 0 ) snake[0].x = 16 * box;
+    if(snake[0].y > 15 * box) snake[0].y = 0;
+    if(snake[0].y < 0) snake[0].y = 16 * box;
     for (i = 1; i < snake.length; i++){
         if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
-            clearInterval(jogo);
-            alert("Game Over :(    Pontuação: " + pontuacao);
+            if (pontuacao_maxima < pontuacao) pontuacao_maxima = pontuacao;
+            alert("Game Over :(    Pontuação: " + pontuacao + "    Pontuação Maxima: " + pontuacao_maxima);
+            pontuacao = 1;
+            snake.length = 1;
         }
     }
     criarBG();
@@ -63,8 +67,14 @@ function iniciarJogo(){
         snake.pop();
     }
     else{
-        food.x =  Math.floor(Math.random() * 15 + 1) * box;
-        food.y =  Math.floor(Math.random() * 15 + 1) * box;
+        do{
+            confere = 0;
+            food.x =  Math.floor(Math.random() * 15 + 1) * box;
+            food.y =  Math.floor(Math.random() * 15 + 1) * box;
+            for (i = 0; i < snake.length; i++){
+                if(food.x == snake[i].x && food.y == snake[i].y) confere = 1;
+            }
+        }while (confere == 1)
         pontuacao++;
     }
     let newHead = {
